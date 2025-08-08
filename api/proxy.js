@@ -1,10 +1,10 @@
-// Serverless function on Vercel: forwards GETs to RapidAPI and injects both headers.
+// /api/proxy.js
 export default async function handler(req, res) {
   const RAPID_HOST = 'sportsbook-api2.p.rapidapi.com';
   const base = `https://${RAPID_HOST}`;
 
   try {
-    // Allow any RapidAPI path; default to /v0/events/
+    // Accept any RapidAPI path, default to /v0/events/
     const path = (req.query.path || '/v0/events/').toString();
     const url = new URL(path.startsWith('/') ? path : `/${path}`, base);
 
@@ -18,9 +18,9 @@ export default async function handler(req, res) {
     const r = await fetch(url.toString(), {
       method: 'GET',
       headers: {
-        'x-rapidapi-key': process.env.RAPIDAPI_KEY,        // <-- set in Vercel env
-        'x-rapidapi-host': RAPID_HOST
-      }
+        'x-rapidapi-key': process.env.RAPIDAPI_KEY, // set in Vercel
+        'x-rapidapi-host': RAPID_HOST,
+      },
     });
 
     const text = await r.text();
